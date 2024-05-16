@@ -1,37 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import * as S from "./ChatCard.style";
 import DefaultProfile from "../defaultProfile/DefaultProfile";
+import getDateFormat from "@/utils/getDateFormat";
 
 export interface ChatCardProps {
-  id: string;
-  image: string;
-  name: string;
+  userImgUrl: string | null;
+  userNickname: string;
   createdAt: string;
+  roomId: number;
   text: string;
 }
 
 export default function ChatCard({
-  id,
-  image,
-  name,
+  userImgUrl,
+  userNickname,
+  roomId,
   createdAt,
   text,
 }: ChatCardProps) {
   const navigate = useNavigate();
-  const onClick = () => {
-    navigate(`/chat-list/${id}`, {
-      state: { card: { id, image, name, createdAt } },
-    });
-  };
   return (
-    <S.Card onClick={onClick}>
+    <S.Card onClick={() => navigate(`/chat-list/${roomId}`)}>
       <S.ProfilePhotoBox>
-        {!image && <DefaultProfile size="lg" />}
-        {image && <S.Img src={image} alt="프로필 사진" />}
+        {!userImgUrl && <DefaultProfile size="lg" />}
+        {userImgUrl && <S.Img src={userImgUrl} alt="프로필 사진" />}
       </S.ProfilePhotoBox>
       <S.Info>
         <div>
-          <S.Name>{name}</S.Name> <S.CreatedAt>{createdAt}</S.CreatedAt>
+          <S.Name>{userNickname}</S.Name>
+          <S.CreatedAt>{getDateFormat(createdAt)}</S.CreatedAt>
         </div>
         <S.Text>{text}</S.Text>
       </S.Info>

@@ -1,19 +1,6 @@
-export const initChargerInfo = {
-  address: {
-    name: "",
-    location: "",
-  },
-  keyword: "",
-  detailed: "",
-  speed: "급속",
-  fare: "",
-  chargerType: null,
-  content: "",
-};
-
 export const SAMPLE_USER_INFO = {
-  chargerId: "259682",
-  userId: "102",
+  chargerId: "259690",
+  userId: "56",
   token:
-    "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoi7J6E7Iuc7Jyg7KCAIiwicm9sZXMiOltdLCJpYXQiOjE3MTQ5Nzk0NzMsImV4cCI6MTcxNTAzOTk1M30.KRjNyv3mAW5NpEGgYiiVysDUBnFyIjTrNAI-RA0wov8",
+    "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjU2LCJlbWFpbCI6InNwbmFtamlAbmF2ZXIuY29tIiwidXNlcm5hbWUiOiLrgqjsp4Dsm5AiLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTcxNTE2MDU1NywiZXhwIjoxNzE1MjIxMDM3fQ.ZXfOOpYY06W3_-N1MqvN5qiPgCAr3RxzqzQe1EXu5WI",
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as S from "./ReviewItem.style";
 
 import getDateFormat from "@/utils/getDateFormat";

@@ -1,12 +1,23 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { ViewStyle } from "@/types";
 
-export const SummaryContainer = styled.div`
-    // position: absolute;
-    // width: 390px;
-    // bottom: 68px;
-    // background-color: ${({ theme }) => theme.PALETTE.white};
-    // z-index: 2;
-    // padding: 1rem;
+const summaryView = {
+    map: css`
+        z-index: 2;
+        position: absolute;
+        width: 390px;
+        bottom: 68px;
+    `,
+    list: `
+    
+    `,
+};
+
+export const SummaryContainer = styled.div<{ viewstyle: ViewStyle }>`
+    ${({ viewstyle }) => summaryView[viewstyle]}
+    background-color: ${({ theme }) => theme.PALETTE.white};
+    padding: 1rem;
+    cursor: pointer;
 `;
 
 export const DetailTitle = styled.p`

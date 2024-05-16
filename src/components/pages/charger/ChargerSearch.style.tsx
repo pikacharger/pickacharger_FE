@@ -13,6 +13,12 @@ const inputview = {
         position: fixed;
         top: 0;
         width: 390px;
+        div div {
+            border-radius: 0;
+        }
+        path {
+            fill: ${({ theme }) => theme.PALETTE.gray[200]};
+        }
     `,
 };
 
@@ -33,7 +39,7 @@ const resultview = {
     `,
 };
 
-export const SearchContainer = styled.div<{ viewstyle: ViewStyle}>`
+export const SearchContainer = styled.div<{ viewstyle: ViewStyle }>`
     ${({ viewstyle }) => inputview[viewstyle]}
 `;
 

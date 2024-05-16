@@ -17,9 +17,12 @@ import SignUpForm from "@/components/pages/signup/form/Form";
 
 import MESSAGE from "@/constants/message";
 
+import userApi from "@/apis/user";
 import { useToast } from "@/hooks/useToast";
+import { useSendMail, useCheckCode } from "@/hooks/queries/user";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { UserType } from "@/types";
+import Loading from "@/components/common/loading/Loading";
 interface AccountFormProps {
   setData: Dispatch<SetStateAction<UserType>>;
   onNext: () => void;
@@ -30,6 +33,8 @@ export default function AccountForm({ onNext, setData }: AccountFormProps) {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isTimeOver, setIsTimeOver] = useState(false);
 
+  const { sendMail, isPending, isError } = useSendMail();
+  const { checkCode, isError: isCheckCodeError } = useCheckCode();
   const { triggerToast } = useToast();
 
   const initialState = {
@@ -39,7 +44,7 @@ export default function AccountForm({ onNext, setData }: AccountFormProps) {
     passwordCheck: "",
   };
 
-  const { formState, handleInputChange, error, handleSubmit } =
+  const { formState, handleInputChange, error } =
     useFormValidation(initialState);
 
   const isEmailInvalid = !!error.email || !formState.email;
@@ -50,35 +55,33 @@ export default function AccountForm({ onNext, setData }: AccountFormProps) {
     formState.passwordCheck &&
     isCodeVerified;
 
-  const handleSendEmail = async (e: MouseEvent<HTMLButtonElement>) => {
+  const handleSendEmail = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isCodeVerified) return;
     if (!isEmailInvalid) {
-      try {
-        // await authApi.sendEmail({ email: formState.email });
+      sendMail({ email: formState.email });
+      if (!isError) {
         setIsCodeSent(true);
         setIsTimeOver(false);
-        console.log("이메일 코드 전송 성공");
-      } catch (error) {
-        // 에러 메세지
-        triggerToast(MESSAGE.SIGNUP.EMAIL, "error");
       }
     }
   };
 
-  const handleCheckCode = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleCheckCode = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isCodeVerified) return;
-    if (!isCodeInvalid && !isTimeOver) {
+    if (!isCodeInvalid && !isTimeOver && !isPending && !isError) {
       try {
-        // await authApi.checkCode({ code: formState.code });
+        const response = await userApi.checkAuthMail({
+          email: formState.email,
+          authNum: formState.code,
+        });
+        triggerToast(MESSAGE.SIGNUP.CODE_SUCCESS, "success");
         setIsCodeVerified(true);
         setIsCodeSent(false);
         setIsTimeOver(false);
-        console.log("이메일 인증 성공");
       } catch (error) {
-        // 에러 메세지에 따라 ~ 코드가 올바르지 않습니다 등~
-        triggerToast(MESSAGE.SIGNUP.CODE, "error");
+        return triggerToast(MESSAGE.SIGNUP.CODE, "error");
       }
     }
   };
@@ -106,12 +109,15 @@ export default function AccountForm({ onNext, setData }: AccountFormProps) {
         btnText="인증 요청"
         value={formState.email}
         onChange={handleInputChange("email")}
-        placeholder="example@picka.site"
+        placeholder="example@pikacharger.store"
         error={error.email}
-        inputDisabled={isCodeSent || isCodeVerified}
+        inputDisabled={((isCodeSent && !isError) || isCodeVerified) && !isError}
         disabled={
-          isEmailInvalid || (isCodeSent && !isTimeOver) || isCodeVerified
+          isEmailInvalid ||
+          (isCodeSent && !isTimeOver && !isError) ||
+          (isCodeVerified && !isError)
         }
+        isLoading={isPending}
         onClick={handleSendEmail}
       />
       <EmailVerificationInput
@@ -123,9 +129,23 @@ export default function AccountForm({ onNext, setData }: AccountFormProps) {
         onChange={handleInputChange("code")}
         placeholder="인증코드를 입력해 주세요."
         error={error.code}
-        disabled={!isCodeSent || isTimeOver || isCodeVerified}
-        inputDisabled={!isCodeSent || isTimeOver || isCodeVerified}
-        timer={isCodeSent && !isTimeOver}
+        disabled={
+          (!isCodeSent ||
+            isTimeOver ||
+            isCodeVerified ||
+            isPending ||
+            isError) &&
+          !isCheckCodeError
+        }
+        inputDisabled={
+          (!isCodeSent ||
+            isTimeOver ||
+            isCodeVerified ||
+            isPending ||
+            isError) &&
+          !isCheckCodeError
+        }
+        timer={isCodeSent && !isTimeOver && !isPending && !isError}
         onClick={handleCheckCode}
       />
       <LabelInput

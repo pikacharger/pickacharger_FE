@@ -20,6 +20,7 @@ export const ImgBox = styled.div`
   height: 45px;
   overflow: hidden;
   border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.PALETTE.gray[100]};
 `;
 
 export const Img = styled.img`

@@ -1,5 +1,5 @@
 import * as S from "./Rating.style";
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect } from "react";
 import StarIcon from "@/components/common/icons/StarIcon";
 
 const ratingArr = [1, 2, 3, 4, 5];
@@ -15,9 +15,13 @@ export interface RatingProps {
 export default function Rating({
   name = "rating",
   onChange,
-  value,
+  value = 1,
 }: RatingProps) {
-  const [rating, setRating] = useState<number>(value ? value : 1);
+  const [rating, setRating] = useState<number>(value);
+
+  useEffect(() => {
+    setRating(value);
+  }, [value]);
 
   const handleStarClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

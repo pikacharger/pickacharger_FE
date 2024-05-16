@@ -8,10 +8,10 @@ import ErrorMessage from "@/components/common/errorMessage/ErrorMessage";
 import Button from "@/components/common/button/Button";
 import Timer from "../timer/Timer";
 import { ColorType } from "@/types";
+import EmailLoading from "./emailLoading/EmailLoading";
 
-// Q 질문 !!
-// => 컴포넌트를 조합해서 사용할 경우 사용하는 속성에 대한 interface 관리 방법이 궁금합니다.
 interface EmailVerificationInputProps {
+  isLoading?: boolean;
   isVerified?: boolean;
   inputDisabled?: boolean;
   error?: string;
@@ -31,6 +31,7 @@ interface EmailVerificationInputProps {
 const TIMERMINUTES = 3;
 
 export default function EmailVerificationInput({
+  isLoading = false,
   isVerified = false,
   disabled = false,
   label,
@@ -62,9 +63,15 @@ export default function EmailVerificationInput({
               <Timer minutes={TIMERMINUTES} setIsTimeOver={setIsTimeOver} />
             </Input.Right>
           )}
+          {isLoading && (
+            <Input.Right>
+              <EmailLoading />
+            </Input.Right>
+          )}
         </Input.Base>
         <Button
           size="sm"
+          disabled={isVerified || disabled}
           category={isVerified ? "retry" : disabled ? "disable" : "normal"}
           onClick={onClick}
         >

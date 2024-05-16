@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-
+import { fadeIn } from "@/styles/animations";
 export const Container = styled.div`
   padding: 80px 1.5rem;
 `;
@@ -26,4 +26,10 @@ export const EmptyText = styled.div`
     font-size: ${({ theme }) => theme.FONT_SIZE.xs};
     color: ${({ theme }) => theme.PALETTE.gray[400]};
   }
+`;
+
+export const Wrapper = styled.div`
+  animation-name: ${fadeIn};
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
 `;

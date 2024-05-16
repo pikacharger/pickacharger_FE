@@ -2,12 +2,14 @@ import styled from "styled-components";
 
 interface Props {
   disabled: boolean;
+  $position?: string;
 }
 
 export const Container = styled.button<Props>`
   position: fixed;
-  // 하단 네비게이션 높이값
-  bottom: 68px;
+  bottom: ${({ $position }) => ($position == "default" ? "68px" : "0")};
+  left: 50%;
+  transform: translate(-50%);
   width: 390px;
   cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
   z-index: ${({ theme }) => theme.ZINDEX.nav};

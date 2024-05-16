@@ -2,6 +2,7 @@
 import * as S from "./SignUp.style";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import IconButton from "@/components/common/iconButton/IconButton";
 import AccountForm from "@/components/pages/signup/form/account/AccountForm";
@@ -14,6 +15,7 @@ import { useFunnel } from "@/hooks/useFunnel";
 const signupSteps = ["계정 정보", "유저 정보", "가입 완료"];
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const { Funnel, Step, currentStep, handleClickNext } = useFunnel(
     signupSteps[0]
   );
@@ -33,7 +35,7 @@ export default function SignUp() {
       {currentStep !== signupSteps[signupSteps.length - 1] && (
         <TopNavigationBar
           text="회원가입"
-          leftBtn={<IconButton icon={"arrowLeft"} />}
+          leftBtn={<IconButton icon="arrowLeft" onClick={() => navigate(-1)} />}
         />
       )}
       <S.Container>

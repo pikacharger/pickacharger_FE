@@ -34,7 +34,8 @@ export const DetailWrapper = styled.div`
 `;
 
 export const Content = styled.div`
-  ${flexSpaceBetweenCenter}
+  display: flex;
+  justify-content: space-between;
   gap: 1.5rem;
 `;
 export const Left = styled.div``;

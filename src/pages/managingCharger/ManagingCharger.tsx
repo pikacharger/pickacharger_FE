@@ -4,44 +4,23 @@ import TopNavigationBar from "@/components/common/topNavigationBar/TopNavigation
 import { Charger } from "@/types";
 import { useNavigate } from "react-router-dom";
 import * as S from "./ManagingCharger.style";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { SAMPLE_USER_INFO } from "@/constants/myCharger";
+import myChargerApi from "@/apis/myCharger";
+import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 
 export default function ManagingCharger() {
   const navigate = useNavigate();
-
-  const getMyChargerlist = async (
-    userId: string,
-    token: string
-  ): Promise<Charger[]> => {
-    const url = `/api/chargers/users/${userId}`;
-    try {
-      const res = await axios({
-        method: "get",
-        url: url,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return res.data;
-    } catch (error) {
-      console.error("Error:", error);
-      return [];
-    }
-  };
+  const {
+    user: { id },
+  } = useCheckUserInfo();
   const { data } = useQuery<Charger[], Error>({
-    queryKey: ["myChargerList", SAMPLE_USER_INFO.userId],
-    queryFn: () =>
-      getMyChargerlist(SAMPLE_USER_INFO.userId, SAMPLE_USER_INFO.token),
+    queryKey: ["myChargerList", id],
+    queryFn: myChargerApi.getMyCharger,
   });
-
-  console.log(data);
-
   return (
     <S.Container>
       <TopNavigationBar
-        leftBtn={<IconButton icon="arrowLeft" />}
+        leftBtn={<IconButton icon="arrowLeft" onClick={() => navigate(-1)} />}
         text="충전기 관리"
       />
       {data && data.length > 0 ? (
@@ -54,13 +33,16 @@ export default function ManagingCharger() {
                 like={false}
                 tag={false}
                 border="bottom"
-                onClick={() => navigate(`/charger/${data.chargerId}`)}
+                onClick={() => navigate(`/charger/detail/${data.chargerId}`)}
               />
             );
           })}
         </>
       ) : (
-        <S.NoInfo>등록한 충전기가 없습니다</S.NoInfo>
+        <S.EmptyText>
+          <p>등록된 충전기가 없습니다</p>
+          <span>충전소 등록으로 수익을 창출해 보세요!</span>
+        </S.EmptyText>
       )}
     </S.Container>
   );

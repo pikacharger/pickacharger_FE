@@ -14,12 +14,26 @@ import React, { useEffect, useState } from "react";
 import * as S from "./RegisterCharger.style";
 import FareInput from "@/components/pages/registerCharger/fareInput/FareInput";
 import StickButton from "@/components/common/stickyButton/StickyButton";
-import axios from "axios";
 import { IChargerInfo, IErrors, ISearchResult } from "@/types/myCharger";
-import { SAMPLE_USER_INFO, initChargerInfo } from "@/constants/myCharger";
+import ConfirmDialog from "@/components/common/confirmDialog/ConfirmDialog";
+import { useNavigate } from "react-router-dom";
+import myChargerApi from "@/apis/myCharger";
+import MESSAGE from "@/constants/message";
+import { useToast } from "@/hooks/useToast";
 
 export default function RegisterCharger() {
-  const [chargerInfo, setChargerInfo] = useState<IChargerInfo>(initChargerInfo);
+  const [chargerInfo, setChargerInfo] = useState<IChargerInfo>({
+    address: {
+      name: "",
+      location: "",
+    },
+    keyword: "",
+    detailed: "",
+    speed: "급속",
+    fare: "",
+    chargerType: null,
+    content: "",
+  });
   const [photos, setPhotos] = useState<File[]>([]);
   const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
   const debouncedKeyword = useDebounce(chargerInfo.keyword);
@@ -29,7 +43,9 @@ export default function RegisterCharger() {
     fare: { isError: false, errorMessage: "" },
     chargerType: { isError: false, errorMessage: "" },
   });
-
+  const [isConfirm, setIsConfirm] = useState(false);
+  const navigate = useNavigate();
+  const { triggerToast } = useToast();
   const updateSearchItem = (name: string, location: string) => {
     setChargerInfo((prev) => ({
       ...prev,
@@ -96,7 +112,7 @@ export default function RegisterCharger() {
 
     const jsonData = {
       chargerLocation: chargerInfo.address.location,
-      chargerName: chargerInfo.address.name,
+      chargerName: `${chargerInfo.address.name}/${chargerInfo.detailed}`,
       chargingSpeed: chargerInfo.speed,
       latitude: 0,
       longitude: 0,
@@ -111,27 +127,6 @@ export default function RegisterCharger() {
     });
     return formData;
   }
-
-  const createCharger = async (userId: string, userToken: string) => {
-    const url = `/api/chargers/users/${userId}`;
-    const formData = createFormData();
-    const token = userToken;
-
-    try {
-      const res = await axios({
-        method: "post",
-        url: url,
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log(res.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   const onValidationValues = (): boolean => {
     if (chargerInfo.address.location === "") {
@@ -161,8 +156,17 @@ export default function RegisterCharger() {
   const onSubmitValue = () => {
     const isPass = onValidationValues();
     if (isPass) {
-      console.log(chargerInfo);
-      createCharger(SAMPLE_USER_INFO.userId, SAMPLE_USER_INFO.token);
+      const data = createFormData();
+      myChargerApi
+        .postMyCharger(data)
+        .then((res) => navigate(`/charger/detail/${res.chargerId}`))
+        .catch((error) => {
+          if (error.response.status === 413) {
+            triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
+            return;
+          }
+          alert("충전소 등록이 실패하였습니다.");
+        });
     }
   };
 
@@ -173,10 +177,24 @@ export default function RegisterCharger() {
   return (
     <S.Container>
       <TopNavigationBar
-        leftBtn={<IconButton icon="arrowLeft" />}
+        leftBtn={
+          <IconButton icon="arrowLeft" onClick={() => setIsConfirm(true)} />
+        }
         text="충전소 등록"
       />
       <S.Main>
+        <ConfirmDialog
+          open={isConfirm}
+          title="충전소 등록을 취소하시겠습니까?"
+          confirmButton="네"
+          confirmOnClick={() => {
+            navigate(-1);
+          }}
+          cancelButton="아니요"
+          cancelOnClick={() => {
+            setIsConfirm(false);
+          }}
+        />
         <S.ColumnBox>
           <S.Box>
             <SearchInput
@@ -250,7 +268,6 @@ export default function RegisterCharger() {
           error={errors.chargerType.isError}
           errorMessage={errors.chargerType.errorMessage}
         />
-        <StickButton text="충전기 추가하기" />
         <Textarea
           label="내용"
           placeholder="이용에 대한 상세한 정보 (비용,이용 시간 등)를 작성해 주세요."
@@ -266,7 +283,7 @@ export default function RegisterCharger() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton onClick={onSubmitValue} text="작성완료"></StickButton>
+      <StickButton onClick={onSubmitValue} text="작성완료" position="write" />
     </S.Container>
   );
 }

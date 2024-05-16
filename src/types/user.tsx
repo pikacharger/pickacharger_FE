@@ -19,13 +19,13 @@ export interface UserInfoRequest {
 }
 
 export interface UserInfoResponse {
-  roleId: number;
   id: number | null;
   username: string;
   email: string;
-  nickname: string;
+  nickName: string;
   chargerType: string | null;
-  address?: string;
-  phoneNumber?: string;
-  profileImage?: string;
+  address?: string | null;
+  phoneNumber?: string | null;
+  profileImage?: string | null;
+  roleId?: number;
 }

@@ -16,7 +16,7 @@ export default function ChargerInfoBar({
 }: ChargerInfoBarProps) {
   const navigate = useNavigate();
   return (
-    <S.Bar onClick={() => navigate(`/charger/${id}`)}>
+    <S.Bar onClick={() => navigate(`/charger/detail/${id}`)}>
       <S.ImgBox>{image && <S.Img src={image} alt="충전기 사진" />}</S.ImgBox>
       <S.TextBox>
         <S.Name>{name}</S.Name>

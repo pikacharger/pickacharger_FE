@@ -5,13 +5,17 @@ export const BottomContainer = styled.div`
   position: fixed;
   bottom: 0;
   height: 68px;
-  padding: 1.5rem;
-  z-index: 999;
-  background-color : ${({ theme }) => theme.PALETTE.white};
-  font-size: ${({ theme }) => theme.FONT_SIZE.es};
-  font-weight: ${({ theme }) => theme.FONT_WEIGHT.light};
+  padding: 12px 20.5px 12px 34.5px;
+  z-index: ${({ theme }) => theme.ZINDEX.nav};
+  background-color: ${({ theme }) => theme.PALETTE.white};
   border-top: ${({ theme }) => theme.PALETTE.gray[100]} 1px solid;
+  font-size: ${({ theme }) => theme.FONT_SIZE.xs};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.medium};
   color: ${({ theme }) => theme.PALETTE.gray[400]};
+
+  p {
+    margin-top: 4px;
+  }
   path {
     fill: ${({ theme }) => theme.PALETTE.gray[400]};
   }
@@ -21,6 +25,7 @@ export const BottomContainer = styled.div`
   }
   .active {
     color: ${({ theme }) => theme.PALETTE.mainColor};
+
     path {
       fill: ${({ theme }) => theme.PALETTE.mainColor};
     }

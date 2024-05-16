@@ -1,60 +1,43 @@
 import * as S from "./Login.style";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import logo from "@/assets/imgs/logo_big.png";
 import Button from "@/components/common/button/Button";
 import LabelInput from "@/components/common/labelInput/LabelInput";
 import TopNavigationBar from "@/components/common/topNavigationBar/TopNavigationBar";
 
-import { useToast } from "@/hooks/useToast";
 import { useFormValidation } from "@/hooks/useFormValidation";
-// import { useLogin } from "@/hooks/queries/user";
-import userApi from "@/apis/user";
-import TokenService from "@/utils/tokenService";
-import MESSAGE from "@/constants/message";
+import { useLogin } from "@/hooks/queries/user";
 
 export default function Login() {
   const initialState = {
     email: "",
     password: "",
   };
-  const navigate = useNavigate();
-  const { triggerToast } = useToast();
+
   const { formState, handleInputChange, error, handleSubmit } =
     useFormValidation(initialState);
-
-  // const { login } = useLogin();
 
   const isFormValid =
     !Object.keys(error).length && formState.email && formState.password;
 
-  const handleLogin = async () => {
-    try {
-      const response = await userApi.login(formState);
-      console.log(response, "로그인 성공");
-      triggerToast(MESSAGE.LOGIN.SUCCESS, "success");
-      TokenService.setToken(response);
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { login } = useLogin();
 
   return (
     <>
       <TopNavigationBar text="로그인" />
       <S.Container>
-        <S.LogoWrapper>
-          <img src={logo} alt="피카충전 로고" />
-        </S.LogoWrapper>
-
-        {/* <S.Form onSubmit={handleSubmit(() => login(formState))}> */}
-        <S.Form onSubmit={handleSubmit(handleLogin)}>
+        <Link to="/">
+          <S.LogoWrapper>
+            <img src={logo} alt="피카충전 로고" />
+          </S.LogoWrapper>
+        </Link>
+        <S.Form onSubmit={handleSubmit(() => login(formState))}>
           <LabelInput
             name="email"
             label="이메일"
-            placeholder="example@picka.site"
+            placeholder="example@pikacharger.store"
             value={formState.email}
             onChange={handleInputChange("email")}
             error={error.email}
@@ -83,8 +66,6 @@ export default function Login() {
             </Link>
           </p>
         </S.TextWrapper>
-
-        {/* 카카오 및 구글 로그인은 이후 기능 가능하면 퍼블리싱 추가 예정 */}
       </S.Container>
     </>
   );

@@ -24,3 +24,20 @@ export const List = styled.div`
     border-radius: 10px;
   }
 `;
+
+export const EmptyText = styled.div`
+  text-align: center;
+  padding-top: 100px;
+  p {
+    font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+    font-size: ${({ theme }) => theme.FONT_SIZE.sm};
+    color: ${({ theme }) => theme.PALETTE.gray[400]};
+    margin-bottom: 4px;
+  }
+  span {
+    display: inline-block;
+    font-weight: ${({ theme }) => theme.FONT_WEIGHT.medium};
+    font-size: ${({ theme }) => theme.FONT_SIZE.xs};
+    color: ${({ theme }) => theme.PALETTE.gray[400]};
+  }
+`;

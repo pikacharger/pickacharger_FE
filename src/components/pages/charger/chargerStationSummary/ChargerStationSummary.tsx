@@ -1,15 +1,17 @@
-import { ChargerStation } from "@/types"
+import { ChargerStation,  ViewStyle} from "@/types"
 import * as S from "./ChargerStationSummary.style"
+
 
 interface SummaryProps {
     chargerStation : ChargerStation;
-    open : ()=> void;
+    open? : ()=> void;
+    viewstyle:ViewStyle;
 }
 
 export default function ChargerStationSummary (
-    {chargerStation, open} : SummaryProps
+    {chargerStation, open, viewstyle} : SummaryProps
 ) {
-    return <S.SummaryContainer onClick={open}>
+    return <S.SummaryContainer onClick={open} viewstyle={viewstyle}>
         <S.DetailTitle>{chargerStation.chargerName}</S.DetailTitle>
                     <S.DetailLocation>
                         {chargerStation.chargerLocation}

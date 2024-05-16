@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import * as S from "./ChargerEdit.style";
@@ -17,54 +16,44 @@ import StickButton from "@/components/common/stickyButton/StickyButton";
 import Textarea from "@/components/common/textarea/Textarea";
 import PhotoRegister from "@/components/common/photoRegister/PhotoRegister";
 import { useNavigate } from "react-router-dom";
-import { SAMPLE_USER_INFO, initChargerInfo } from "@/constants/myCharger";
+import { SAMPLE_USER_INFO } from "@/constants/myCharger";
 import {
   IChargerInfo,
   IErrors,
   ISearchResult,
   IchargerImage,
 } from "@/types/myCharger";
+import ConfirmDialog from "@/components/common/confirmDialog/ConfirmDialog";
+import myChargerApi from "@/apis/myCharger";
+import MESSAGE from "@/constants/message";
+import { useToast } from "@/hooks/useToast";
+import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 
 export default function ChargerEdit() {
-  // Todo: 작성완료 시 충전소 상세 페이지로 이동
-  // Todo: useLocation으로 유저 id, 충전기 id 값 받아오기
+  const currentUrl = window.location.href;
+  const parts = currentUrl.split("/");
+  const idIndex = parts.indexOf("edit") - 1;
+  const chargerId = parts[idIndex];
 
-  const getChargerEdit = async (
-    chargerId: string,
-    userId: string,
-    token: string
-  ) => {
-    const url = `/api/chargers/${chargerId}/users/${userId}/edit-from`;
-    try {
-      const res = await axios({
-        method: "get",
-        url: url,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return res.data;
-    } catch (error) {
-      console.error("Error:", error);
-      return {};
-    }
-  };
-
+  const { user } = useCheckUserInfo();
   const { data } = useQuery({
-    queryKey: [
-      "chargerInfo",
-      SAMPLE_USER_INFO.userId,
-      SAMPLE_USER_INFO.chargerId,
-    ],
-    queryFn: () =>
-      getChargerEdit(
-        SAMPLE_USER_INFO.chargerId,
-        SAMPLE_USER_INFO.userId,
-        SAMPLE_USER_INFO.token
-      ),
+    queryKey: ["chargerInfo", user.id, chargerId],
+    queryFn: () => myChargerApi.getEditMyCharger(chargerId),
   });
   const navigate = useNavigate();
-  const [chargerInfo, setChargerInfo] = useState<IChargerInfo>(initChargerInfo);
+  const [isConfirm, setIsConfirm] = useState(false);
+  const [chargerInfo, setChargerInfo] = useState<IChargerInfo>({
+    address: {
+      name: "",
+      location: "",
+    },
+    keyword: "",
+    detailed: "",
+    speed: "급속",
+    fare: "",
+    chargerType: null,
+    content: "",
+  });
   const [photos, setPhotos] = useState<File[]>([]);
   const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
   const debouncedKeyword = useDebounce(chargerInfo.keyword);
@@ -74,6 +63,7 @@ export default function ChargerEdit() {
     fare: { isError: false, errorMessage: "" },
     chargerType: { isError: false, errorMessage: "" },
   });
+  const { triggerToast } = useToast();
 
   const conversionToFileData = async (chargerImageList: IchargerImage[]) => {
     const filePromises = chargerImageList.map(async (file) => {
@@ -89,13 +79,16 @@ export default function ChargerEdit() {
 
   useEffect(() => {
     if (data) {
+      const arr = data.chargerName.split("/");
+      const name = arr[0];
+      const detail = arr[1];
       setChargerInfo({
         address: {
-          name: data.chargerName,
+          name: name,
           location: data.chargerLocation,
         },
-        keyword: data.chargerName,
-        detailed: "",
+        keyword: name,
+        detailed: detail,
         speed: data.chargingSpeed,
         fare: data.personalPrice,
         chargerType: data.chargerTypeList[0].type,
@@ -174,7 +167,7 @@ export default function ChargerEdit() {
 
     const jsonData = {
       chargerLocation: chargerInfo.address.location,
-      chargerName: chargerInfo.address.name,
+      chargerName: `${chargerInfo.address.name}/${chargerInfo.detailed}`,
       chargingSpeed: chargerInfo.speed,
       content: chargerInfo.content,
       personalPrice: parseInt(chargerInfo.fare),
@@ -188,26 +181,6 @@ export default function ChargerEdit() {
 
     return formData;
   }
-
-  const updateCharger = async () => {
-    const url = `/api/chargers/${SAMPLE_USER_INFO.chargerId}/users/${SAMPLE_USER_INFO.userId}`;
-    const formData = createFormData();
-    const token = SAMPLE_USER_INFO.token;
-
-    try {
-      const res = await axios({
-        method: "patch",
-        url: url,
-        data: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return res.data ? true : false;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   const onValidationValues = (): boolean => {
     if (chargerInfo.address.location === "") {
@@ -237,22 +210,41 @@ export default function ChargerEdit() {
   const onSubmitValue = async () => {
     const isPass = onValidationValues();
     if (isPass) {
-      const isSuccess = await updateCharger();
-      if (isSuccess) {
-        navigate(`/charger/${SAMPLE_USER_INFO.chargerId}`);
-      } else {
-        alert("충전소 수정이 실패했습니다!");
-      }
+      const data = createFormData();
+      myChargerApi
+        .patchMyCharger(data, chargerId)
+        .then((res) => navigate(`/charger/detail/${res.chargerId}`))
+        .catch((error) => {
+          if (error.response.status === 413) {
+            triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
+            return;
+          }
+          alert("충전소 등록이 실패하였습니다.");
+        });
     }
   };
 
   return (
     <S.Container>
       <TopNavigationBar
-        leftBtn={<IconButton icon="arrowLeft" />}
+        leftBtn={
+          <IconButton icon="arrowLeft" onClick={() => setIsConfirm(true)} />
+        }
         text="충전소 수정"
       />
       <S.Main>
+        <ConfirmDialog
+          open={isConfirm}
+          title="충전소 수정을 취소하시겠습니까?"
+          confirmButton="네"
+          confirmOnClick={() => {
+            navigate(-1);
+          }}
+          cancelButton="아니요"
+          cancelOnClick={() => {
+            setIsConfirm(false);
+          }}
+        />
         <S.ColumnBox>
           <S.Box>
             <SearchInput
@@ -326,7 +318,6 @@ export default function ChargerEdit() {
           error={errors.chargerType.isError}
           errorMessage={errors.chargerType.errorMessage}
         />
-        <StickButton text="충전기 추가하기" />
         <Textarea
           label="내용"
           placeholder="이용에 대한 상세한 정보 (비용,이용 시간 등)를 작성해 주세요."
@@ -342,7 +333,7 @@ export default function ChargerEdit() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton onClick={onSubmitValue} text="작성완료"></StickButton>
+      <StickButton onClick={onSubmitValue} text="작성완료" position="write" />
     </S.Container>
   );
 }

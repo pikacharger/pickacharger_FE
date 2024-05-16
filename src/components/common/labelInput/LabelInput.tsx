@@ -18,6 +18,8 @@ interface LabelInputProps {
   color?: ColorType;
   errorMessage?: string;
   require?: boolean;
+  readOnly? : boolean;
+  inputDisabled?: boolean;
 }
 
 export default function LabelInput({
@@ -30,19 +32,23 @@ export default function LabelInput({
   value,
   errorMessage,
   onChange,
+  readOnly=false,
+  inputDisabled = false,
 }: LabelInputProps) {
   return (
     <Input>
       <Input.Label htmlFor={name} require={require}>
         {label}
       </Input.Label>
-      <Input.Base error={!!error}>
+      <Input.Base error={!!error} disabled={inputDisabled}>
         <Input.Center
           type={type}
           placeholder={placeholder}
           onChange={onChange}
           name={name}
           value={value}
+          readOnly={readOnly}
+          disabled={inputDisabled}
         />
       </Input.Base>
       <ErrorMessage visible={!!error}>{error || errorMessage}</ErrorMessage>

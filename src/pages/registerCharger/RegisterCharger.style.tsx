@@ -1,9 +1,7 @@
 import { flexAlignCenter, flexColumn } from "@/styles/common";
 import styled from "styled-components";
 
-export const Container = styled.section`
-  padding-bottom: 68px;
-`;
+export const Container = styled.section``;
 
 export const Box = styled.div`
   position: relative;

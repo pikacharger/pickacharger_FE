@@ -38,8 +38,8 @@ const FONT_WEIGHT = {
 const ZINDEX = {
   nav: 50,
   overLay: 100,
-  confirm: 500,
-  toast: 999,
+  confirm: 1000,
+  toast: 9999,
 };
 
 const theme = {

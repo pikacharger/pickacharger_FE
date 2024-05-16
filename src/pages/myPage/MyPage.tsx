@@ -7,30 +7,19 @@ import EditIcon from "@/components/common/icons/EditIcon";
 import RightIcon from "@/components/common/icons/RightIcon";
 import OutlineBoltIcon from "@/components/common/icons/OutlineBoltIcon";
 import OutlineLikeIcon from "@/components/common/icons/OutlineLikeIcon";
+import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 
 export default function MyPage() {
-    const user = {
-        user_id: 1,
-        userName: "JohnDoe",
-        address: "123 Main St, Anytown",
-        email: "john.doe@example.com",
-        password: "hashedpassword123",
-        phone_number: "123-456-7890",
-        role: "admin",
-        chargerType: "fast",
-        nickname: "johnd",
-        profileImage: "profile.jpg",
-        resign_reason: "Moving to another city",
-        resign: false,
-    };
+    const { user } = useCheckUserInfo();
+
     return (
         <S.Container>
             <TopNavigationBar text="마이페이지" />
             <S.UserInfo>
                 <div className="info-container">
-                    <img src={profile} alt="프로필이미지" />
+                    <img src={user.profileImage || profile} alt="프로필이미지" />
                     <div className="info-content">
-                        <p className="user-name">{user.nickname}님</p>
+                        <p className="user-name">{user.nickName}님</p>
                         <p className="user-email">{user.email}</p>
                     </div>
                 </div>

@@ -3,18 +3,20 @@ import React, { useState, useEffect } from "react";
 import * as S from "./ChargerSearch.style";
 import SearchInput from "@/components/common/searchInput/SearchInput";
 import SearchResultItem from "../registerCharger/searchResultItem/SearchResultItem";
-import { ISearchResult } from "@/pages/registerCharger/RegisterCharger";
-import { SearchInfo } from "@/pages/chargerMapView/ChargerMapView";
+import  {ISearchResult}  from "@/types/myCharger";
+import { SearchInfo } from "@/pages/charger/Charger";
 import { useDebounce } from "@/hooks/useDebounce";
 import { searchAddress } from "@/apis/kakaoSearchAddress";
 import Input from "@/components/common/input/input";
 import LeftIcon from "@/components/common/icons/LeftIcon";
 import { ViewStyle } from "@/types";
+import { SearchDiv } from "@/pages/home/Home.style";
+import SearchIcon from "@/components/common/icons/SearchIcon";
 
 interface ChargerSearchProps {
     searchInfo: SearchInfo;
     searchInfoHandler: React.Dispatch<React.SetStateAction<SearchInfo>>;
-    viewtype?: ViewStyle;
+    viewType?: ViewStyle;
 }
 
 const SEARCH_PLACEHOLDER = "충전소를 검색해 보세요.";
@@ -24,7 +26,7 @@ const KEYWORD_NAME = "keyword";
 export default function ChargerSearch({
     searchInfo,
     searchInfoHandler,
-    viewtype = "map",
+    viewType = "map",
 }: ChargerSearchProps) {
     const [show, setShow] = useState(false);
     const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
@@ -57,8 +59,8 @@ export default function ChargerSearch({
     };
 
     return (
-        <S.SearchContainer viewstyle={viewtype}>
-            {viewtype === "map" ? (
+        <S.SearchContainer viewstyle={viewType}>
+            {viewType === "map" ? (
                 <SearchInput
                     placeholder={SEARCH_PLACEHOLDER}
                     onChange={updateInput}
@@ -69,7 +71,7 @@ export default function ChargerSearch({
                 <Input>
                     <Input.Base>
                         <Input.Left>
-                            <LeftIcon />
+                            <SearchIcon />
                         </Input.Left>
                         <Input.Center
                             placeholder={SEARCH_PLACEHOLDER}
@@ -82,7 +84,7 @@ export default function ChargerSearch({
             )}
 
             {show && searchResults.length > 0 && (
-                <S.SearchResultsBox viewstyle={viewtype}>
+                <S.SearchResultsBox viewstyle={viewType}>
                     {searchResults.map((result) => (
                         <SearchResultItem
                             key={result.id}

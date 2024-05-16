@@ -2,6 +2,7 @@ import React from "react";
 
 import * as S from "./ConfirmDialog.style";
 import Button from "../button/Button";
+import OverLay from "../overLay/OverLay";
 
 type ConfirmDialogProps = {
     title: string;
@@ -11,6 +12,7 @@ type ConfirmDialogProps = {
     confirmOnClick: () => void;
     cancelOnClick: () => void;
     children?: React.ReactNode;
+    open: boolean;
 };
 
 {
@@ -33,9 +35,10 @@ export default function ConfirmDialog({
     confirmOnClick,
     cancelOnClick,
     children,
+    open,
 }: ConfirmDialogProps) {
     return (
-        <S.ConfirmContainer>
+        <OverLay open={open} handleOpen={cancelOnClick}>
             <S.Confirm>
                 <S.ConfirmTitle type={type}>{title}</S.ConfirmTitle>
                 {type === "dialog" && (
@@ -56,6 +59,6 @@ export default function ConfirmDialog({
                     </Button>
                 </S.ButtonDiv>
             </S.Confirm>
-        </S.ConfirmContainer>
+        </OverLay>
     );
 }

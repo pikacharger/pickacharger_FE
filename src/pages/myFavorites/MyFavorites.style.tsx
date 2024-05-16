@@ -27,6 +27,12 @@ export const FavoriteList = styled.ul`
   height: 475px;
   overflow: auto;
   padding-bottom: 15.625rem;
+
+  > span {
+    display: block;
+    width: fit-content;
+    margin: 50px auto;
+  }
 `;
 
 export const IconWrapper = styled.div`

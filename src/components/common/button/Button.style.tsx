@@ -21,6 +21,7 @@ const BUTTON_CATEGORY: ObjMap = {
   disable: css`
     background-color: ${({ theme }) => theme.PALETTE.gray[100]};
     color: ${({ theme }) => theme.PALETTE.gray[200]};
+    cursor: not-allowed;
   `,
   outline: css`
     border-color: ${({ theme }) => theme.PALETTE.mainColor};

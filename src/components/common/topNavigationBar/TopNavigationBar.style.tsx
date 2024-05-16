@@ -8,7 +8,7 @@ export const Container = styled.div`
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+  z-index: ${({ theme }) => theme.ZINDEX.nav};
   font-size: ${({ theme }) => theme.FONT_SIZE.md};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.medium};
   color: ${({ theme }) => theme.PALETTE.black};

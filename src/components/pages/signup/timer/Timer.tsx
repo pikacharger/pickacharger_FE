@@ -27,7 +27,6 @@ export default function Timer({ minutes, setIsTimeOver }: TimerProps) {
           if (setIsTimeOver) {
             setIsTimeOver(true);
           }
-          console.log("타이머 시간 종료.");
           return 0;
         }
         return prev - INTERVAL;

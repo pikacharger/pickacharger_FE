@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import * as S from "./ChargerMap.style";
 import { ChargerStation } from "@/types/charger";
-import { MapCenter } from "@/pages/chargerMapView/ChargerMapView";
+import { MapCenter } from "@/pages/charger/Charger";
 import marker_individual from "@/assets/imgs/marker_individual.png";
 import marker_public from "@/assets/imgs/marker_public.png";
 import ChargerListDetail from "../ChargerListDetail";
 import { useToggle } from "@/hooks/useToggle";
 import ChargerStationSummary from "../chargerStationSummary/ChargerStationSummary";
+import { useNavigate } from "react-router-dom";
 
 declare global {
     interface Window {
@@ -20,6 +21,7 @@ export interface ChargerProps {
     type?: "full" | "half";
     mapCenter: MapCenter;
     setMapCenter: React.Dispatch<React.SetStateAction<MapCenter>>;
+    searchButtonOpen?: () => void;
 }
 
 export default function ChargerMap({
@@ -27,19 +29,25 @@ export default function ChargerMap({
     type = "full",
     mapCenter,
     setMapCenter,
+    searchButtonOpen,
 }: ChargerProps) {
     const [isStationOpen, setStationOpen] = useState(false);
-    const [stationId, setStationId] = useState(-1);
+    const [stationId, setStationId] = useState(0);
     const { open, close, isOpen } = useToggle(false);
+    const navigate = useNavigate();
 
     function markerClickHandler(i: number) {
-        setStationOpen(true);
-        setStationId(i - 1);
+        if (type === "full") {
+            setStationOpen(true);
+            setStationId(i);
+        } else {
+            navigate(`/charger/detail/${info[i].chargers[0].chargerId}`);
+        }
     }
 
     function mapClickHandler() {
         setStationOpen(false);
-        setStationId(-1);
+        setStationId(0);
     }
 
     useEffect(() => {
@@ -56,9 +64,13 @@ export default function ChargerMap({
         window.kakao.maps.event.addListener(map, "dragend", function () {
             // 지도 중심좌표를 얻어옵니다
             let latlng = map.getCenter();
+            if (searchButtonOpen) {
+                searchButtonOpen();
+            }
             setMapCenter({ lat: latlng.getLat(), lon: latlng.getLng() });
         });
-        info.forEach((chargerStation, i) => {
+
+        info?.forEach((chargerStation, index) => {
             const imageSrc =
                 chargerStation.chargers[0].chargerRole === "개인"
                     ? marker_individual
@@ -79,15 +91,14 @@ export default function ChargerMap({
                 title: chargerStation.chargerName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
                 image: markerImage, // 마커 이미지
             });
-
             window.kakao.maps.event.addListener(marker, "click", () =>
-                markerClickHandler(i)
+                markerClickHandler(index)
             );
             window.kakao.maps.event.addListener(map, "click", () =>
                 mapClickHandler()
             );
         });
-    }, []);
+    }, [info]);
 
     return (
         <>
@@ -95,6 +106,7 @@ export default function ChargerMap({
             {isStationOpen && info[stationId] && (
                 <>
                     <ChargerStationSummary
+                        viewstyle="map"
                         chargerStation={info[stationId]}
                         open={open}
                     />

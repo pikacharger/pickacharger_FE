@@ -1,4 +1,4 @@
-import { ISearchResult } from "@/pages/registerCharger/RegisterCharger";
+import { ISearchResult } from "@/types/myCharger";
 import axios from "axios";
 
 export const searchAddress = async (

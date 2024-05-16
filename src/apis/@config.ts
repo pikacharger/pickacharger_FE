@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// test
 import axios, { AxiosError } from "axios";
+
 import TokenService from "@/utils/tokenService";
+import userApi from "./user";
 
 const apiBaseUrl = "/api";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
   withCredentials: true,
-  timeout: 3000,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  timeout: 5000,
 });
 
 // 요청
@@ -33,9 +33,21 @@ api.interceptors.response.use(
     return response;
   },
 
-  (error: AxiosError) => {
-    if (error?.response?.status === 401) {
-      TokenService.removeToken();
+  async (error: AxiosError) => {
+    const { response, config } = error;
+
+    if (response?.status === 401 && config) {
+      try {
+        const response = await userApi.postCreateAccessByRefresh();
+        TokenService.setToken(response.token);
+        api.defaults.headers.common.Authorization = `Bearer ${response.token}`;
+        if (config?.headers) {
+          config.headers.Authorization = `Bearer ${response.token}`;
+        }
+        return api(config);
+      } catch (err) {
+        window.location.href = "/login";
+      }
     }
 
     return Promise.reject(error);

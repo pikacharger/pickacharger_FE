@@ -1,62 +1,95 @@
 import styled from "styled-components";
+import { flexColumn } from "@/styles/common";
 
 export const UserInfoContainer = styled.div`
-    width: 390px;
-    height: 100vh;
-    margin-top: 56px;
-    background-color: ${({ theme }) => theme.PALETTE.gray[100]};
+  width: 100%;
+  height: 100%;
+  padding-top: 1.5rem;
+  margin-top: 56px;
 `;
 
 export const InfoContainer = styled.div`
-    padding: 1.5rem;
-    margin: 0.5rem 0;
-    height: 75vh;
-    background-color: ${({ theme }) => theme.PALETTE.white};
+  padding: 0 1.5rem 5rem;
+  padding-bottom: 5rem;
 `;
 
 export const ProfileContainer = styled.div`
-    text-align: center;
+  position: relative;
+  width: 106px;
+  height: 106px;
+  margin: 0 auto 1rem;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+  }
+  label {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: transparent;
+    cursor: pointer;
+    svg {
+      width: 27px;
+      height: 27px;
+    }
+  }
+  input[type="file"] {
+    display: none;
+  }
 `;
 
 export const ProfileInfoContainer = styled.div`
-    margin: 1rem;
-    P {
-        text-align: center;
-        margin: 0.5rem;
-    }
+  margin-bottom: 1rem;
+  P {
+    text-align: center;
+  }
 `;
 export const NicknamePara = styled.p`
-    font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
-    font-size: ${({ theme }) => theme.FONT_SIZE.lg};
-    color: ${({ theme }) => theme.PALETTE.black};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  font-size: 21px;
+  color: ${({ theme }) => theme.PALETTE.black};
+  margin-bottom: 4px;
 `;
 export const EmailPara = styled.p`
-    font-size: ${({ theme }) => theme.FONT_SIZE.sm};
-    color: ${({ theme }) => theme.PALETTE.gray[300]};
+  font-size: ${({ theme }) => theme.FONT_SIZE.sm};
+  color: ${({ theme }) => theme.PALETTE.gray[300]};
+`;
+
+export const InputContainer = styled.div`
+  ${flexColumn}
+  gap: 1rem;
 `;
 
 export const EditContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  div {
+    flex: 1;
+  }
+  button {
+    align-self: end;
+  }
 `;
 
 export const AccountOptionsDiv = styled.div`
-    margin: 0.5rem 0;
-    padding: 1.5rem;
-    height: 25vh;
-    background-color: ${({ theme }) => theme.PALETTE.white};
-    display : flex;
-    justify-content: flex-start;
-    p {
-        color: ${({ theme }) => theme.PALETTE.gray[200]};
-    }
-    svg {
-        margin: 0 1rem;
-        width: 3px;
-        height: 20px;
-    }
-    path {
-        stroke : ${({ theme }) => theme.PALETTE.gray[300]};
-    }
+  border-top: 8px solid ${({ theme }) => theme.PALETTE.gray[100]};
+  padding: 2rem 1.5rem;
+  background-color: ${({ theme }) => theme.PALETTE.white};
+  display: flex;
+  align-items: center;
+  p {
+    color: ${({ theme }) => theme.PALETTE.gray[300]};
+    font-size: ${({ theme }) => theme.FONT_SIZE.sm};
+    cursor: pointer;
+  }
+  svg {
+    margin: 0 24px;
+    width: 3px;
+    height: 20px;
+  }
+  path {
+    stroke: ${({ theme }) => theme.PALETTE.gray[300]};
+  }
 `;

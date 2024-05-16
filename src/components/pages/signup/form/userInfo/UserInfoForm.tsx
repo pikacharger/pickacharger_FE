@@ -31,23 +31,21 @@ export default function UserInfoForm({ onNext, data }: UserInfoFormProps) {
     nickname: "",
   };
   const defaultData = {
-    roleId: 1,
-    address: null,
-    phoneNumber: null,
-    profileImage: null,
+    address: "",
+    phoneNumber: "",
   };
 
   const { formState, handleInputChange, error } =
     useFormValidation(initialState);
+
   const { triggerToast } = useToast();
-  // const { signUp } = useSignUp();
+  const { signUp } = useSignUp(onNext);
 
   const handleChangeCharger = (e: MouseEvent<HTMLButtonElement>) => {
     const value = e.currentTarget.value;
     setChargerType(value);
   };
 
-  const isNameInvalid = !!error.name || !formState.username;
   const isFormValid =
     !Object.keys(error).length &&
     formState.username &&
@@ -55,17 +53,20 @@ export default function UserInfoForm({ onNext, data }: UserInfoFormProps) {
     isNickNameVerified &&
     chargerType;
 
+  const isNickNameInvalid = !!error.nickname || !formState.nickname;
+
   const handleCheckNickName = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!isNameInvalid) {
-      // try {
-      // await authApi.checkNickname({ nickname: formState.nickname });
-      setIsNickNameVerified(true);
-      console.log("닉네임 중복확인 검사 성공");
-      // } catch (error) {
-      //  에러 메세지에 따라
-      // triggerToast(MESSAGE.SIGNUP.NICKNAME, "error");
-      // }
+    if (!isNickNameInvalid) {
+      try {
+        const response = await userApi.checkUserNickName(formState.nickname);
+        triggerToast(MESSAGE.SIGNUP.NICKNAME_SUCCESS, "success");
+        if (response)
+          return triggerToast(MESSAGE.SIGNUP.NICKNAME_FAIL, "error");
+        setIsNickNameVerified(true);
+      } catch (error) {
+        triggerToast(MESSAGE.ERROR.DEFAULT, "error");
+      }
     }
   };
 
@@ -79,17 +80,7 @@ export default function UserInfoForm({ onNext, data }: UserInfoFormProps) {
         ...defaultData,
         chargerType,
       };
-
-      try {
-        const response = await userApi.signup(submitData);
-        console.log("회원가입데이터", { submitData });
-        console.log(response, "회원가입 성공");
-        onNext();
-      } catch (error) {
-        console.log(submitData);
-        triggerToast(MESSAGE.ERROR.DEFAULT, "error");
-        console.error(error);
-      }
+      signUp(submitData);
     }
   };
 
@@ -111,8 +102,9 @@ export default function UserInfoForm({ onNext, data }: UserInfoFormProps) {
         btnText={isNickNameVerified ? "사용 가능" : "중복 확인"}
         onChange={handleInputChange("nickname")}
         onClick={handleCheckNickName}
+        inputDisabled={isNickNameVerified}
+        disabled={isNickNameVerified || isNickNameInvalid}
         value={formState.nickname}
-        isVerified={isNickNameVerified}
       />
       <SelectCharger value={chargerType} label onChange={handleChangeCharger} />
       <S.ButtonWrapper>

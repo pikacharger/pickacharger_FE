@@ -24,16 +24,14 @@ export default function ReviewBottomSheet({
   const navigate = useNavigate();
   const { triggerToast } = useToast();
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     try {
-      // 삭제 api
-      // 유저 아이디 전역에서 가져오기
-      const userId = "11";
-      const response = reviewApi.deleteReview(reviewId, userId);
-      console.log("삭제 응답", response);
+      await reviewApi.deleteReview(reviewId);
       triggerToast(MESSAGE.REVIEW.DELETE, "success");
+      navigate(-2);
+      confirmClose();
     } catch (err) {
-      console.log(err);
+      triggerToast(MESSAGE.ERROR.DEFAULT, "error");
     }
   };
 
@@ -65,6 +63,7 @@ export default function ReviewBottomSheet({
         <ConfirmDialog
           title="삭제할까요?"
           type="confirm"
+          open={confirmIsOpen}
           confirmOnClick={handleDelete}
           confirmButton="확인"
           cancelButton="취소"

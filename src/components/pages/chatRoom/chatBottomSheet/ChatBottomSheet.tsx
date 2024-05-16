@@ -37,16 +37,15 @@ export default function ChatBottomSheet({ close, open }: ChatBottomSheetProps) {
           </S.Item>
         </S.List>
       </BottomSheet>
-      {confirmIsOpen && (
-        <ConfirmDialog
-          title="채팅방을 나가면 채팅 목록 및 대화 내용이 삭제되고 복구할 수 없어요. 채팅방에서 나가시겠어요?"
-          type="confirm"
-          confirmOnClick={handleDelete}
-          confirmButton="네, 나갈래요."
-          cancelButton="취소"
-          cancelOnClick={confirmClose}
-        />
-      )}
+      <ConfirmDialog
+        open={confirmIsOpen}
+        title="채팅방을 나가면 채팅 목록 및 대화 내용이 삭제되고 복구할 수 없어요. 채팅방에서 나가시겠어요?"
+        type="confirm"
+        confirmOnClick={handleDelete}
+        confirmButton="네, 나갈래요."
+        cancelButton="취소"
+        cancelOnClick={confirmClose}
+      />
     </>
   );
 }
