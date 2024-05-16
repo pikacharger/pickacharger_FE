@@ -47,9 +47,9 @@ jobs:
           STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            TARGET_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
+            echo "TARGET_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")" >> $GITHUB_ENV
           else
-            TARGET_UPSTREAM=green
+            echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
           fi
 
       - name: Set up Docker Buildx
