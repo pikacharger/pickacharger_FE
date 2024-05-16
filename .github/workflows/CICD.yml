@@ -79,9 +79,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver -f ./Dockerfile .
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver .
+        working-directory: ./
       - name: Push Docker
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver:latest  
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver:latest
+        working-directory: ./
 
       # 마지막으로 ssh로 인스턴스에 연결하여 이미지를 Pull하고 컨테이너를 재시작한다.
       - name: Pull and restart Docker Container
