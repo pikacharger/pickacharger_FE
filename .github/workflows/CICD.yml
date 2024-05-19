@@ -47,9 +47,9 @@ jobs:
           STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LIVE_SERVER_IP }}/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            TARGET_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")
+            echo "TARGET_UPSTREAM=$(curl -s "http://${{ secrets.LIVE_SERVER_IP }}/env")" >> $GITHUB_ENV
           else
-            TARGET_UPSTREAM=green
+            echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
           fi
 
       - name: Set up Docker Buildx
@@ -78,5 +78,6 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver
             sudo docker stop nginxserver
-            sudo docker run -d --rm --name nginxserver -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/nginxserver
+            sudo docker-compose -f docker-compose-nginx.yml up -d
+            sleep 5
             sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{ env.TARGET_UPSTREAM }};" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
