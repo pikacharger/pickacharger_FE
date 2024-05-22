@@ -12,7 +12,7 @@ import Textarea from "@/components/common/textarea/Textarea";
 import CameraIcon from "@/components/common/icons/CameraIcon";
 import mypageApi from "@/apis/mypage";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
-import { useLogout } from "@/hooks/queries/mypage";
+import { useEditUserInfo, useLogout } from "@/hooks/queries/mypage";
 import { useGetUserInfo } from "@/hooks/queries/user";
 import { useNavigate } from "react-router-dom";
 import TokenService from "@/utils/tokenService";
@@ -33,6 +33,7 @@ export default function MyInfo() {
     const { user } = useCheckUserInfo();
     const { refetch } = useGetUserInfo();
     const { logout } = useLogout();
+    const { editUserInfo } = useEditUserInfo();
     const [nickname, setNickname] = useState<string>("");
     const [imgFile, setImgFile] = useState<string>(user.profileImage || "");
 
@@ -65,11 +66,8 @@ export default function MyInfo() {
             };
             newData.append("file", file);
             newData.append("userUpdateDto", JSON.stringify(userUpdateDto));
-            console.log(file);
-            mypageApi.editUserInfo(newData).then((res) => {
-                setNickname("");
-                refetch();
-            });
+            setNickname("");
+            editUserInfo(newData);
         }
     };
 
@@ -78,10 +76,8 @@ export default function MyInfo() {
             const userUpdateDto = { nickname: nickname };
             newData.append("userUpdateDto", JSON.stringify(userUpdateDto));
             nicknameClose();
-            mypageApi.editUserInfo(newData).then(() => {
-                setNickname("");
-                refetch();
-            });
+            editUserInfo(newData);
+            setNickname("");
         }
     };
 
