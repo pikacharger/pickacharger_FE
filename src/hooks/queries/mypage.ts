@@ -52,4 +52,22 @@ const useEditUserInfo = () => {
     };
 };
 
-export { useLogout, useEditUserInfo };
+const useDeleteUser = () => {
+    // const navigate = useNavigate();
+    const { mutate } = useMutation({
+        mutationFn: () => mypageApi.deleteUser(),
+        onSuccess: () => {
+            logout();
+            // navigate("/");
+            window.location.href = "/";
+        },
+        onError: (error: AxiosError<string>) => {
+            console.log(error);
+        },
+    });
+    return {
+        deleteUser: mutate,
+    };
+};
+
+export { useLogout, useEditUserInfo, useDeleteUser };

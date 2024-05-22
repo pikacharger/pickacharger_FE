@@ -10,12 +10,9 @@ import { useToggle } from "@/hooks/useToggle";
 import ConfirmDialog from "@/components/common/confirmDialog/ConfirmDialog";
 import Textarea from "@/components/common/textarea/Textarea";
 import CameraIcon from "@/components/common/icons/CameraIcon";
-import mypageApi from "@/apis/mypage";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
-import { useEditUserInfo, useLogout } from "@/hooks/queries/mypage";
-import { useGetUserInfo } from "@/hooks/queries/user";
+import { useDeleteUser, useEditUserInfo, useLogout } from "@/hooks/queries/mypage";
 import { useNavigate } from "react-router-dom";
-import TokenService from "@/utils/tokenService";
 import IconButton from "@/components/common/iconButton/IconButton";
 
 export default function MyInfo() {
@@ -31,9 +28,9 @@ export default function MyInfo() {
         isOpen: accountIsOpen,
     } = useToggle(false);
     const { user } = useCheckUserInfo();
-    const { refetch } = useGetUserInfo();
     const { logout } = useLogout();
     const { editUserInfo } = useEditUserInfo();
+    const { deleteUser } = useDeleteUser();
     const [nickname, setNickname] = useState<string>("");
     const [imgFile, setImgFile] = useState<string>(user.profileImage || "");
 
@@ -87,12 +84,8 @@ export default function MyInfo() {
     };
 
     const accountHandler = async () => {
-        await mypageApi.deleteUser().then((res) => {
-            TokenService.removeToken();
-            accountClose();
-            // navigate("/", { replace: true });
-            window.location.href = "/";
-        });
+        accountClose();
+        deleteUser();
     };
 
     return (
