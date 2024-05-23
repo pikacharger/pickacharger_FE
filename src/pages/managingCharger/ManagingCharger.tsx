@@ -1,12 +1,14 @@
-import ChargingInfo from "@/components/common/chargingInfo/ChargingInfo";
-import IconButton from "@/components/common/iconButton/IconButton";
-import TopNavigationBar from "@/components/common/topNavigationBar/TopNavigationBar";
 import { Charger } from "@/types";
 import { useNavigate } from "react-router-dom";
 import * as S from "./ManagingCharger.style";
 import { useQuery } from "@tanstack/react-query";
 import myChargerApi from "@/apis/myCharger";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
+import {
+  ChargingInfo,
+  IconButton,
+  TopNavigationBar,
+} from "@/components/common";
 
 export default function ManagingCharger() {
   const navigate = useNavigate();

@@ -3,20 +3,12 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import * as S from "./ChargerEdit.style";
 import { searchAddress } from "@/apis/kakaoSearchAddress";
-import TopNavigationBar from "@/components/common/topNavigationBar/TopNavigationBar";
-import IconButton from "@/components/common/iconButton/IconButton";
-import SearchInput from "@/components/common/searchInput/SearchInput";
 import SearchResultItem from "@/components/pages/registerCharger/searchResultItem/SearchResultItem";
 import DetailedAddress from "@/components/pages/registerCharger/detailedAddress/DetailedAddress";
 import Label from "@/components/common/label/Label";
 import SpeedRadioBtn from "@/components/pages/registerCharger/speedRadioBtn/SpeedRadioBtn";
 import FareInput from "@/components/pages/registerCharger/fareInput/FareInput";
-import SelectCharger from "@/components/common/selectCharger/SelectCharger";
-import StickButton from "@/components/common/stickyButton/StickyButton";
-import Textarea from "@/components/common/textarea/Textarea";
-import PhotoRegister from "@/components/common/photoRegister/PhotoRegister";
 import { useNavigate } from "react-router-dom";
-import { SAMPLE_USER_INFO } from "@/constants/myCharger";
 import {
   IChargerInfo,
   IErrors,
@@ -28,6 +20,15 @@ import myChargerApi from "@/apis/myCharger";
 import MESSAGE from "@/constants/message";
 import { useToast } from "@/hooks/useToast";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
+import {
+  IconButton,
+  PhotoRegister,
+  SearchInput,
+  SelectCharger,
+  StickyButton,
+  Textarea,
+  TopNavigationBar,
+} from "@/components/common";
 
 export default function ChargerEdit() {
   const currentUrl = window.location.href;
@@ -337,7 +338,7 @@ export default function ChargerEdit() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton
+      <StickyButton
         disabled={isLoading}
         onClick={onSubmitValue}
         text={isLoading ? "수정중..." : "수정완료"}
