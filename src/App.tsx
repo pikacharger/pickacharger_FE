@@ -2,7 +2,7 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import ToastProvider from "@/components/common/toast/provider/ToastProvider.tsx";
 import GlobalStyles from "./styles/global.ts";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import theme from "./styles/theme.ts";
 import router from "./routes/routing.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ function App() {
           <ToastProvider>
             <RouterProvider router={router} />
           </ToastProvider>
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ThemeProvider>
     </>

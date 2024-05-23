@@ -18,6 +18,7 @@ export default function ManagingCharger() {
   const { data: list } = useQuery({
     queryKey: ["myChargerList", id],
     queryFn: myChargerApi.getMyCharger,
+    staleTime: 60 * 1000 * 5,
   });
   return (
     <S.Container>
@@ -31,6 +32,7 @@ export default function ManagingCharger() {
           {list.map((data: Charger) => {
             return (
               <ChargingInfo
+                key={data.chargerId}
                 info={data}
                 like={false}
                 tag={false}

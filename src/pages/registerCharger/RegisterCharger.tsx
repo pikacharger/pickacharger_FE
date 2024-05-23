@@ -22,6 +22,8 @@ import {
   Textarea,
   TopNavigationBar,
 } from "@/components/common";
+import { useQueryClient } from "@tanstack/react-query";
+import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 
 export default function RegisterCharger() {
   const [chargerInfo, setChargerInfo] = useState<IChargerInfo>({
@@ -47,8 +49,13 @@ export default function RegisterCharger() {
   });
   const [isConfirm, setIsConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    user: { id },
+  } = useCheckUserInfo();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { triggerToast } = useToast();
+
   const updateSearchItem = (name: string, location: string) => {
     setChargerInfo((prev) => ({
       ...prev,
@@ -166,6 +173,10 @@ export default function RegisterCharger() {
     myChargerApi
       .postMyCharger(data)
       .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["myChargerList", id],
+          exact: true,
+        });
         navigate(`/charger/detail/${res.chargerId}`);
       })
       .catch((error) => {

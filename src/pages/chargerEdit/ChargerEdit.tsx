@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import * as S from "./ChargerEdit.style";
@@ -41,6 +41,7 @@ export default function ChargerEdit() {
     queryKey: ["chargerInfo", user.id, chargerId],
     queryFn: () => myChargerApi.getEditMyCharger(chargerId),
   });
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isConfirm, setIsConfirm] = useState(false);
   const [chargerInfo, setChargerInfo] = useState<IChargerInfo>({
@@ -218,7 +219,13 @@ export default function ChargerEdit() {
     const data = createFormData();
     myChargerApi
       .patchMyCharger(data, chargerId)
-      .then((res) => navigate(`/charger/detail/${res.chargerId}`))
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["myChargerList", user.id],
+          exact: true,
+        });
+        navigate(`/charger/detail/${res.chargerId}`);
+      })
       .catch((error) => {
         if (error.response.status === 413) {
           triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
