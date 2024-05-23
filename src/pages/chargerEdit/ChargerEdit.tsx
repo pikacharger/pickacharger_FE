@@ -34,7 +34,7 @@ export default function ChargerEdit() {
   const parts = currentUrl.split("/");
   const idIndex = parts.indexOf("edit") - 1;
   const chargerId = parts[idIndex];
-
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useCheckUserInfo();
   const { data } = useQuery({
     queryKey: ["chargerInfo", user.id, chargerId],
@@ -208,20 +208,24 @@ export default function ChargerEdit() {
   };
 
   const onSubmitValue = async () => {
+    setIsLoading(true);
     const isPass = onValidationValues();
-    if (isPass) {
-      const data = createFormData();
-      myChargerApi
-        .patchMyCharger(data, chargerId)
-        .then((res) => navigate(`/charger/detail/${res.chargerId}`))
-        .catch((error) => {
-          if (error.response.status === 413) {
-            triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
-            return;
-          }
-          alert("충전소 등록이 실패하였습니다.");
-        });
+    if (!isPass) {
+      setIsLoading(false);
+      return;
     }
+    const data = createFormData();
+    myChargerApi
+      .patchMyCharger(data, chargerId)
+      .then((res) => navigate(`/charger/detail/${res.chargerId}`))
+      .catch((error) => {
+        if (error.response.status === 413) {
+          triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
+          return;
+        }
+        alert("충전소 등록이 실패하였습니다.");
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -333,7 +337,12 @@ export default function ChargerEdit() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton onClick={onSubmitValue} text="작성완료" position="write" />
+      <StickButton
+        disabled={isLoading}
+        onClick={onSubmitValue}
+        text={isLoading ? "수정중..." : "수정완료"}
+        position="write"
+      />
     </S.Container>
   );
 }
