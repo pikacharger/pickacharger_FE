@@ -44,6 +44,7 @@ export default function RegisterCharger() {
     chargerType: { isError: false, errorMessage: "" },
   });
   const [isConfirm, setIsConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { triggerToast } = useToast();
   const updateSearchItem = (name: string, location: string) => {
@@ -152,22 +153,27 @@ export default function RegisterCharger() {
     }
     return true;
   };
-
   const onSubmitValue = () => {
+    setIsLoading(true);
     const isPass = onValidationValues();
-    if (isPass) {
-      const data = createFormData();
-      myChargerApi
-        .postMyCharger(data)
-        .then((res) => navigate(`/charger/detail/${res.chargerId}`))
-        .catch((error) => {
-          if (error.response.status === 413) {
-            triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
-            return;
-          }
-          alert("충전소 등록이 실패하였습니다.");
-        });
+    if (!isPass) {
+      setIsLoading(false);
+      return;
     }
+    const data = createFormData();
+    myChargerApi
+      .postMyCharger(data)
+      .then((res) => {
+        navigate(`/charger/detail/${res.chargerId}`);
+      })
+      .catch((error) => {
+        if (error.response.status === 413) {
+          triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
+          return;
+        }
+        alert("충전소 등록이 실패하였습니다.");
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -283,7 +289,12 @@ export default function RegisterCharger() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton onClick={onSubmitValue} text="작성완료" position="write" />
+      <StickButton
+        disabled={isLoading}
+        onClick={onSubmitValue}
+        text={isLoading ? "등록중..." : "작성완료"}
+        position="write"
+      />
     </S.Container>
   );
 }
