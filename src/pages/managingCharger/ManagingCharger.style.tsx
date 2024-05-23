@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { flexColumn } from "@/styles/common";
 
 export const Container = styled.section`
-  margin: 56px 1.5rem 68px;
+  margin: 56px 0 68px;
   ${flexColumn};
   height: 720px;
   overflow-y: auto;
@@ -17,6 +17,10 @@ export const Container = styled.section`
     background-color: ${({ theme }) => theme.PALETTE.mainColor};
     border-radius: 10px;
   }
+`;
+
+export const Contents = styled.div`
+  margin: 0 1.5rem;
 `;
 
 export const Title = styled.h3`

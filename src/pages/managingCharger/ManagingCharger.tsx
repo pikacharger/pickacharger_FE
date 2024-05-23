@@ -13,7 +13,7 @@ export default function ManagingCharger() {
   const {
     user: { id },
   } = useCheckUserInfo();
-  const { data } = useQuery<Charger[], Error>({
+  const { data: list } = useQuery({
     queryKey: ["myChargerList", id],
     queryFn: myChargerApi.getMyCharger,
   });
@@ -23,10 +23,10 @@ export default function ManagingCharger() {
         leftBtn={<IconButton icon="arrowLeft" onClick={() => navigate(-1)} />}
         text="충전기 관리"
       />
-      {data && data.length > 0 ? (
-        <>
-          <S.Title>내가 관리하는 {data.length}개의 충전기</S.Title>
-          {data.map((data) => {
+      {list && list.length > 0 ? (
+        <S.Contents>
+          <S.Title>내가 관리하는 {list.length}개의 충전기</S.Title>
+          {list.map((data: Charger) => {
             return (
               <ChargingInfo
                 info={data}
@@ -37,7 +37,7 @@ export default function ManagingCharger() {
               />
             );
           })}
-        </>
+        </S.Contents>
       ) : (
         <S.EmptyText>
           <p>등록된 충전기가 없습니다</p>
