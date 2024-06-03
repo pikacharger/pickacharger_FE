@@ -24,9 +24,14 @@ export interface SearchInfo {
     keyword: string;
 }
 
-export interface MapCenter {
+export interface Location {
     lat: number;
     lon: number;
+}
+
+export interface UseCurLocatioReturn {
+    curLocation: Location;
+    error: string;
 }
 
 export default function Charger() {
@@ -49,13 +54,34 @@ export default function Charger() {
         },
         keyword: "",
     });
-    const [mapCenter, setMapCenter] = useState<MapCenter>({
+    const [mapCenter, setMapCenter] = useState<Location>({
         lat: 0,
         lon: 0,
     });
     const [chargerInfo, setChargerInfo] = useState<ChargerStation[]>([]);
 
     const { data, isLoading, isError } = useChargerList(location);
+    const [queries, setQueries] = useState(
+        JSON.parse(localStorage.getItem("queries") || "[]")
+    );
+
+    useEffect(() => {
+        if (searchInfo.address.location) {
+            const newQuery = {
+                id: Date.now(),
+                location: searchInfo.address.location,
+                name: searchInfo.address.name,
+            };
+            const curQueries = queries.filter((word: any) => {
+                return newQuery.name !== word.name;
+            });
+            setQueries([newQuery, ...curQueries]);
+        }
+    }, [location]);
+    useEffect(() => {
+        //array 타입을 string형태로 바꾸기 위해 json.stringfy를 사용한다.
+        localStorage.setItem("queries", JSON.stringify(queries));
+    }, [queries]);
 
     useEffect(() => {
         if (!isLoading && !isError) {
@@ -152,8 +178,7 @@ export default function Charger() {
                                 size="md"
                                 category="outline"
                                 onClick={searchButtonClose}>
-                                <ArrowRotateIcon />
-                                현 지도에서 검색
+                                <ArrowRotateIcon />현 지도에서 검색
                             </Button>
                         </S.SearchButtonContainer>
                     )}
@@ -177,6 +202,54 @@ export default function Charger() {
                 </>
             ) : (
                 <>
+                    <S.HistoryContainer>
+                        <S.HistoryTitle>
+                            <p>최근 검색어</p>
+                            <button
+                                onClick={() => {
+                                    console.log("전체삭제");
+                                    setQueries([]);
+                                }}>
+                                전체 삭제
+                            </button>
+                        </S.HistoryTitle>
+                        <S.SearchHistory>
+                            {queries.length === 0 ? (
+                                <p>최근 검색된 기록이 없습니다.</p>
+                            ) : (
+                                queries.map((query: any) => {
+                                    return (
+                                        <S.HistoryItem key={query.id}>
+                                            <S.HistoryKeyword
+                                                onClick={() => {
+                                                    setLocation(query.location);
+                                                }}>
+                                                {query.name}
+                                            </S.HistoryKeyword>
+                                            <S.RemoveButton
+                                                onClick={() => {
+                                                    const nextQueries =
+                                                        queries.filter(
+                                                            (
+                                                                thisQuery: any
+                                                            ) => {
+                                                                return (
+                                                                    thisQuery.id !=
+                                                                    query.id
+                                                                );
+                                                            }
+                                                        );
+                                                    console.log(nextQueries);
+                                                    setQueries(nextQueries);
+                                                }}>
+                                                X
+                                            </S.RemoveButton>
+                                        </S.HistoryItem>
+                                    );
+                                })
+                            )}
+                        </S.SearchHistory>
+                    </S.HistoryContainer>
                     <S.listViewContainer>
                         {chargerInfo?.map((chargerStation) => {
                             return (
