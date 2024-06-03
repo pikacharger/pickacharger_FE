@@ -31,9 +31,7 @@ export const ChargerContainer = styled.div`
     height: 100%;
 `;
 
-export const listViewContainer = styled.div`
-    margin: 45px 0 110px;
-`;
+export const listViewContainer = styled.div``;
 
 export const ButtonContainer = styled.div<{ viewtype: ViewStyle }>`
     ${({ viewtype }) => ButtonView[viewtype]}
@@ -60,8 +58,55 @@ export const SearchButtonContainer = styled.div`
         width: 170px;
     }
     & svg {
-        width : 15px;
-        height : 15px;
-        margin-right : 0.5rem;
+        width: 15px;
+        height: 15px;
+        margin-right: 0.5rem;
     }
+`;
+
+export const HistoryContainer = styled.div`
+    margin-top: 65px;
+`;
+
+export const HistoryTitle = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem;
+    p {
+        font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+    }
+    button {
+        background-color: ${({ theme }) => theme.PALETTE.white};
+        cursor: pointer;
+    }
+`;
+
+export const SearchHistory = styled.div`
+    display: flex;
+    margin: 0 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    p {
+        margin: 0.5rem;
+    }
+`;
+
+export const HistoryItem = styled.div`
+    flex: 0 0 auto;
+    margin: 0.5rem;
+    padding: 0.3rem 0.7rem;
+    background-color: ${({ theme }) => theme.PALETTE.primary[100]};
+    border-radius: 1rem;
+`;
+
+export const HistoryKeyword = styled.span`
+    cursor: pointer;
+    color: ${({ theme }) => theme.PALETTE.mainColor};
+`;
+
+export const RemoveButton = styled.button`
+    background-color: ${({ theme }) => theme.PALETTE.primary[100]};
+    color: ${({ theme }) => theme.PALETTE.gray[300]};
+    margin: 0.3rem;
+    cursor: pointer;
 `;
