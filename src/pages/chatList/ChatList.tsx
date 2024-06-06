@@ -14,10 +14,12 @@ export interface IMyChatRoom {
 
 export default function ChatList() {
   const { user } = useCheckUserInfo();
+  console.log(user.id);
   const { data } = useQuery({
-    queryKey: ["myChatRoomList", user.id],
+    queryKey: ["chatRoomList", user.id],
     queryFn: myChatApi.getChatRoomList,
   });
+  console.log(data);
 
   return (
     <S.Container>
