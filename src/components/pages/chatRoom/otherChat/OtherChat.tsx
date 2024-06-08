@@ -1,3 +1,4 @@
+import getDateFormat from "@/utils/getDateFormat";
 import DefaultProfile from "../../chatList/defaultProfile/DefaultProfile";
 import * as S from "./OtherChat.style";
 
@@ -26,7 +27,7 @@ export default function OtherChat({
         )}
         <S.Text>{text}</S.Text>
       </S.RowBox>
-      <S.CreatedAt>{createdAt}</S.CreatedAt>
+      <S.CreatedAt>{getDateFormat(createdAt)}</S.CreatedAt>
     </S.ChatBox>
   );
 }
