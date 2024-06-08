@@ -14,30 +14,32 @@ export interface IMyChatRoom {
 
 export default function ChatList() {
   const { user } = useCheckUserInfo();
-  console.log(user.id);
   const { data } = useQuery({
     queryKey: ["chatRoomList", user.id],
     queryFn: myChatApi.getChatRoomList,
   });
-  console.log(data);
 
   return (
     <S.Container>
       <TopNavigationBar text="나의 채팅" />
       <S.List>
         {data ? (
-          data.response.map((room: IMyChatRoom) => {
-            return (
-              <ChatCard
-                key={room.chatRoomId}
-                roomId={room.chatRoomId}
-                userImgUrl={room.userImgUrl}
-                userNickname={room.nickname}
-                createdAt={room.createDate}
-                text={room.lastMessage}
-              />
-            );
-          })
+          data.response
+            .sort(
+              (a: IMyChatRoom, b: IMyChatRoom) => b.chatRoomId - a.chatRoomId
+            )
+            .map((room: IMyChatRoom) => {
+              return (
+                <ChatCard
+                  key={room.chatRoomId}
+                  roomId={room.chatRoomId}
+                  userImgUrl={room.userImgUrl}
+                  userNickname={room.nickname}
+                  createdAt={room.createDate}
+                  text={room.lastMessage}
+                />
+              );
+            })
         ) : (
           <S.EmptyText>
             <p>충전소에 궁금한 점이 있나요?</p>

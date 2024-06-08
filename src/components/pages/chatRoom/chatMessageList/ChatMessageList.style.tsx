@@ -15,6 +15,7 @@ export const List = styled.div`
   width: 100%;
   height: 586px;
   overflow-y: auto;
+
   &::-webkit-scrollbar {
     display: block;
     width: 8px;

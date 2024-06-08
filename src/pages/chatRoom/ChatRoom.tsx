@@ -6,6 +6,7 @@ import ErrorPage from "../Error/ErrorPage";
 interface IUser {
   id: number;
 }
+
 export default function ChatRoom() {
   // page url에서 채팅룸 id 값 가져오기
   const currentUrl = window.location.href;
@@ -21,19 +22,30 @@ export default function ChatRoom() {
   // 채팅방 정보 가져오기
   const {
     data: chatRoomInfo,
-    isLoading,
-    isError,
+    isLoading: isLoadingInfo,
+    isError: isErrorInfo,
   } = useQuery({
     queryKey: ["chatRoomInfo", roomId],
     queryFn: () => myChatApi.getChatRoomInfo(roomId),
   });
 
-  if (isLoading) {
+  // 이전 채팅 내용 가져오기
+  const {
+    data: initialMessages,
+    isLoading: isLoadingMessages,
+    isError: isErrorMessages,
+  } = useQuery({
+    queryKey: ["chatRoomMessages", roomId],
+    queryFn: () => myChatApi.getChatRoomMessages(roomId),
+  });
+
+  if (isLoadingInfo || isLoadingMessages) {
     return <div>Loading...</div>;
   }
-  if (isError) {
+  if (isErrorInfo || isErrorMessages) {
     return <ErrorPage />;
   }
+
   // 가져온 채팅방 유저정보 안에 현재 로그인한 유저 id가 있는지 체크
   if (chatRoomInfo && chatRoomInfo.response) {
     const ids = chatRoomInfo.response.user;
@@ -42,18 +54,11 @@ export default function ChatRoom() {
       return <ErrorPage />;
     }
   }
-  const {
-    response: { chargerId, chargerImg, chargerName, chargingSpeed, createDate },
-  } = chatRoomInfo;
   return (
     <ChatMessageList
-      userId={id}
       chatRoomId={roomId}
-      chargerId={chargerId}
-      chargerImg={chargerImg}
-      chargerName={chargerName}
-      chargingSpeed={chargingSpeed}
-      createDate={createDate}
+      chatRoomInfo={chatRoomInfo.response}
+      initialMessages={initialMessages.response}
     />
   );
 }
