@@ -28,7 +28,6 @@ export default function ChatRoom() {
     queryKey: ["chatRoomInfo", roomId],
     queryFn: () => myChatApi.getChatRoomInfo(roomId),
   });
-
   // 이전 채팅 내용 가져오기
   const {
     data: initialMessages,
@@ -38,7 +37,6 @@ export default function ChatRoom() {
     queryKey: ["chatRoomMessages", roomId],
     queryFn: () => myChatApi.getChatRoomMessages(roomId),
   });
-
   if (isLoadingInfo || isLoadingMessages) {
     return <div>Loading...</div>;
   }

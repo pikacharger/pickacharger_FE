@@ -13,7 +13,7 @@ export const RowBox = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  max-width: 85%;
+  max-width: 80%;
 `;
 
 export const ImgBox = styled.div`
@@ -42,7 +42,8 @@ export const Text = styled.div`
 `;
 
 export const CreatedAt = styled.span`
-  width: 15%;
+  width: 20%;
+  flex-shrink: 0;
   font-size: ${({ theme }) => theme.FONT_SIZE.es};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
   color: ${({ theme }) => theme.PALETTE.gray[300]};

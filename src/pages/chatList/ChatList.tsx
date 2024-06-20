@@ -23,7 +23,7 @@ export default function ChatList() {
     queryKey: ["chatRoomList", user.id],
     queryFn: myChatApi.getChatRoomList,
   });
-
+  console.log(user.id);
   return (
     <S.Container>
       <TopNavigationBar text="나의 채팅" />

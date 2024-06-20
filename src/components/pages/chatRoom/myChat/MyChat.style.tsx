@@ -13,11 +13,12 @@ export const CreatedAt = styled.span`
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.regular};
   color: ${({ theme }) => theme.PALETTE.gray[300]};
   text-align: right;
-  width: 15%;
+  width: 20%;
+  flex-shrink: 0;
 `;
 
 export const Text = styled.div`
-  max-width: 85%;
+  max-width: 80%;
   padding: 12px;
   text-align: left;
   background-color: ${({ theme }) => theme.PALETTE.mainColor};
