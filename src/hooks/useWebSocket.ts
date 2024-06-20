@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-// import useCheckUserInfo from "./useCheckUserInfo";
-import TokenService from "@/utils/tokenService";
 
 type MessageHandler = (message: string) => void;
 
-function useWebSocket(onMessage?: MessageHandler) {
+function useWebSocket(chatRoomId: string, onMessage?: MessageHandler) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  // const { user } = useCheckUserInfo();
-  const token = TokenService.getToken();
 
   // 메시지 핸들러 저장
   const messageHandler = useRef<MessageHandler | undefined>(onMessage);
@@ -19,14 +15,9 @@ function useWebSocket(onMessage?: MessageHandler) {
   }, [onMessage]);
 
   useEffect(() => {
-    if (!token) {
-      console.log("토큰이 없어서 웹소켓 연결을 시작할 수 없습니다.");
-      return;
-    }
-
-    const wsURL = new URL(import.meta.env.VITE_APP_WEB_SOCKET_URL);
-    wsURL.searchParams.append("token", token);
-    const ws = new WebSocket(wsURL.toString());
+    const ws = new WebSocket(
+      `${import.meta.env.VITE_APP_WEB_SOCKET_URL}/${chatRoomId}`
+    );
 
     ws.onopen = () => {
       console.log("웹소켓 서버에 연결됨");
@@ -53,7 +44,7 @@ function useWebSocket(onMessage?: MessageHandler) {
       console.log("웹소켓 연결을 종료합니다.");
       ws.close();
     };
-  }, [token]);
+  }, [chatRoomId]);
 
   const sendMessage = useCallback(
     (message: string) => {

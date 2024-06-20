@@ -11,6 +11,7 @@ import * as S from "./ChatMessageList.style";
 import MyChat from "../myChat/MyChat";
 import OtherChat from "../otherChat/OtherChat";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
+import useWebSocket from "@/hooks/useWebSocket";
 interface ChatRoomInfo {
   chargerId: number;
   chargerImg: string[];
@@ -42,6 +43,8 @@ export default function ChatMessageList({
   const { open, close, isOpen } = useToggle(false);
   const chatRoomRef = useRef<HTMLDivElement>(null);
   const { user } = useCheckUserInfo();
+  const { isConnected } = useWebSocket(chatRoomId);
+  console.log(isConnected);
 
   const [messages, setMessages] = useState(initialMessages);
   const [text, setText] = useState("");
