@@ -13,9 +13,9 @@ import OtherChat from "../otherChat/OtherChat";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 interface ChatRoomInfo {
   chargerId: number;
-  chargerImg: string;
+  chargerImg: string[];
   chargerName: string;
-  chargingSpeed: string;
+  chargingType: string;
   createDate: string;
 }
 interface ChatLog {
@@ -89,9 +89,9 @@ export default function ChatMessageList({
       />
       <ChargerInfoBar
         id={chatRoomInfo.chargerId.toString()}
-        image={chatRoomInfo.chargerImg}
+        image={chatRoomInfo.chargerImg[0]}
         name={chatRoomInfo.chargerName}
-        address={chatRoomInfo.chargingSpeed}
+        address={chatRoomInfo.chargingType}
       />
       <S.List ref={chatRoomRef}>
         <S.CreatedAt>{getDateFormat(chatRoomInfo.createDate)}</S.CreatedAt>

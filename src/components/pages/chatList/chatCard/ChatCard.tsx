@@ -2,35 +2,41 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./ChatCard.style";
 import DefaultProfile from "../defaultProfile/DefaultProfile";
 import getDateFormat from "@/utils/getDateFormat";
+import { ChatUser } from "@/pages/chatList/ChatList";
 
 export interface ChatCardProps {
-  userImgUrl: string | null;
-  userNickname: string;
-  createdAt: string;
-  roomId: number;
-  text: string;
+  chatRoomId: number;
+  createDate: string;
+  lastMessage: string;
+  users: ChatUser[];
+  loginUserId: number;
 }
 
 export default function ChatCard({
-  userImgUrl,
-  userNickname,
-  roomId,
-  createdAt,
-  text,
+  users,
+  chatRoomId,
+  createDate,
+  lastMessage,
+  loginUserId,
 }: ChatCardProps) {
   const navigate = useNavigate();
+  const otherUser = users.find(
+    (chatUser: ChatUser) => chatUser.userId !== loginUserId
+  )!;
   return (
-    <S.Card onClick={() => navigate(`/chat-list/${roomId}`)}>
+    <S.Card onClick={() => navigate(`/chat-list/${chatRoomId}`)}>
       <S.ProfilePhotoBox>
-        {!userImgUrl && <DefaultProfile size="lg" />}
-        {userImgUrl && <S.Img src={userImgUrl} alt="프로필 사진" />}
+        {!otherUser.userProfileImg && <DefaultProfile size="lg" />}
+        {otherUser.userProfileImg && (
+          <S.Img src={otherUser.userProfileImg} alt="프로필 사진" />
+        )}
       </S.ProfilePhotoBox>
       <S.Info>
         <div>
-          <S.Name>{userNickname}</S.Name>
-          <S.CreatedAt>{getDateFormat(createdAt)}</S.CreatedAt>
+          <S.Name>{otherUser.userNickname}</S.Name>
+          <S.CreatedAt>{getDateFormat(createDate)}</S.CreatedAt>
         </div>
-        <S.Text>{text}</S.Text>
+        <S.Text>{lastMessage}</S.Text>
       </S.Info>
     </S.Card>
   );

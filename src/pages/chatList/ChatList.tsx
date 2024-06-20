@@ -4,12 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 import myChatApi from "@/apis/chat";
 import ChatCard from "@/components/pages/chatList/chatCard/ChatCard";
-export interface IMyChatRoom {
-  createDate: string;
-  nickname: string;
+
+export interface ChatUser {
+  userId: number;
+  userNickname: string;
+  userProfileImg: string | null;
+}
+export interface MyChatRoom {
   chatRoomId: number;
-  userImgUrl: string | null;
+  createDate: string;
   lastMessage: string;
+  users: ChatUser[];
 }
 
 export default function ChatList() {
@@ -25,18 +30,16 @@ export default function ChatList() {
       <S.List>
         {data ? (
           data.response
-            .sort(
-              (a: IMyChatRoom, b: IMyChatRoom) => b.chatRoomId - a.chatRoomId
-            )
-            .map((room: IMyChatRoom) => {
+            .sort((a: MyChatRoom, b: MyChatRoom) => b.chatRoomId - a.chatRoomId)
+            .map((room: MyChatRoom) => {
               return (
                 <ChatCard
                   key={room.chatRoomId}
-                  roomId={room.chatRoomId}
-                  userImgUrl={room.userImgUrl}
-                  userNickname={room.nickname}
-                  createdAt={room.createDate}
-                  text={room.lastMessage}
+                  chatRoomId={room.chatRoomId}
+                  users={room.users}
+                  createDate={room.createDate}
+                  lastMessage={room.lastMessage}
+                  loginUserId={user.id!}
                 />
               );
             })
