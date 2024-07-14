@@ -1,30 +1,69 @@
-# React + TypeScript + Vite
+# ⚡️피카충전
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**[ 언제 어디서든 충전소를 찾아주는 피카 충전! ]**
+<br>
+내 주변 충전소들을 쉽게 알아보고 충전소가 없는 지역에서는 개인의 충전기를 사용할 수 있도록 중계해주는 기능을 제공하는 ‘전기차 사용자를 위한 충전기 거래 플랫폼’.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<br>
 
-## Expanding the ESLint configuration
+## 프로젝트 목적
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- 전국적으로 전기차 충전기 대수는 30만대를 초과했지만 미흡한 급속 충전기 보급과 도시에 집중된 충전기 분포로 인해 전기차 충전 인프라에 대한 개선 요구가 계속 되는 상황.
+- 이 때문에 개인용 충전선, 충전기를 사용하는 인구도 증가함.
+- 공공/민간 충전소의 위치를 알 수 있음과 동시에 해당 지역에서 개인용 충전기 보유자와 거래하여 충전기를 빌리고 사용금액을 지불하는 형식으로 공영 주차장으로 제한되었던 장소의 한계를 뛰어넘을 수 있도록 함.
 
-- Configure the top-level `parserOptions` property like this:
+<br>
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## 개발 팀원
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Back-end : 남지원님[PM], 유영무님, 조민지님, 주인혁님
+- Front-end : 김진규님, 박재희님, 예은선님
+
+<br>
+
+## 개발 기간
+
+2024.04.08 ~ 2024.05.10
+
+<br>
+
+## 역할
+
+### 백엔드
+|팀원|역할|
+|------|---|
+|남지원(PM)|데이터 전처리, 이미지 / 리뷰 기능 / 서버 배포|
+|유영무|데이터 전처리, 충전소 / 즐겨찾기 기능 / 서버 배포|
+|조민지|실시간 채팅 / 서버 배포|
+|주인혁|user 관련 기능 / 서버 배포|
+
+
+<br>
+
+### 프론트엔드
+
+|팀원|역할|
+|------|---|
+|예은선|로그인 / 회원가입, 내 리뷰 작성 / 관리|
+|김진규|마이 충전기 등록 / 관리, 채팅목록 / 채팅방|
+|박재희|메인페이지, 충전소 지도/목록, 회원 정보 수정 / 탈퇴|
+
+
+
+##  기술 스택
+
+- 프론트엔드 : TypeScript, React, Vite, React-Query, Jotai
+- 백엔드 : Java 17, spring boot 3.2.4, jpa, Oauth2.0, jwt, aws s3, web socket
+- 데이터베이스 : AWS RDS(MySQL)
+- 서버 배포 : NGINX, Docker, AWS EC2, Redis
+
+<br>
+
+## 사이트
+
+- 피카충전 주소 : [피카충전 링크](https://pikacharger.store/)
+- 와이어프레임 : [피그마 링크](https://www.figma.com/design/MEdquMbF1yzEYNZtIJEhpw/%ED%94%BC%EC%B9%B4%EC%B6%A9%EC%A0%84?node-id=0-1&t=Os8fDUnPiAmk3ura-1)
+- API 명세서 : [스웨거 링크](http://ec2-43-203-7-98.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html#/(%EC%B6%A9%EC%A0%84%EC%86%8C)/createCharger)
+
+
