@@ -7,7 +7,7 @@ import IconButton from "@/components/common/iconButton/IconButton";
 import ChargerMap from "@/components/pages/charger/chargerMap/ChargerMap";
 import { ChargerStation } from "@/types";
 import { useFavoritesCharger } from "@/hooks/queries/charger";
-import { MapCenter } from "../charger/Charger";
+import { Location } from "../charger/Charger";
 import ChargingInfo from "@/components/common/chargingInfo/ChargingInfo";
 import ChargerStationSummary from "@/components/pages/charger/chargerStationSummary/ChargerStationSummary";
 import { useToggle } from "@/hooks/useToggle";
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function MyFavorites() {
   const navigate = useNavigate();
-  const [mapCenter, setMapCenter] = useState<MapCenter>({
+  const [mapCenter, setMapCenter] = useState<Location>({
     lat: 0,
     lon: 0,
   });
