@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import * as S from "./ChargerMap.style";
 import { ChargerStation } from "@/types/charger";
-import { MapCenter } from "@/pages/charger/Charger";
+import { Location } from "@/pages/charger/Charger";
 import marker_individual from "@/assets/imgs/marker_individual.png";
 import marker_public from "@/assets/imgs/marker_public.png";
 import ChargerListDetail from "../ChargerListDetail";
@@ -19,8 +19,8 @@ declare global {
 export interface ChargerProps {
     info: ChargerStation[];
     type?: "full" | "half";
-    mapCenter: MapCenter;
-    setMapCenter: React.Dispatch<React.SetStateAction<MapCenter>>;
+    mapCenter: Location;
+    setMapCenter: React.Dispatch<React.SetStateAction<Location>>;
     searchButtonOpen?: () => void;
 }
 
