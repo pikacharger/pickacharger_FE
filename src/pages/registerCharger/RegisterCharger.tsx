@@ -1,11 +1,4 @@
 import { searchAddress } from "@/apis/kakaoSearchAddress";
-import IconButton from "@/components/common/iconButton/IconButton";
-import Label from "@/components/common/label/Label";
-import PhotoRegister from "@/components/common/photoRegister/PhotoRegister";
-import SearchInput from "@/components/common/searchInput/SearchInput";
-import SelectCharger from "@/components/common/selectCharger/SelectCharger";
-import Textarea from "@/components/common/textarea/Textarea";
-import TopNavigationBar from "@/components/common/topNavigationBar/TopNavigationBar";
 import DetailedAddress from "@/components/pages/registerCharger/detailedAddress/DetailedAddress";
 import SearchResultItem from "@/components/pages/registerCharger/searchResultItem/SearchResultItem";
 import SpeedRadioBtn from "@/components/pages/registerCharger/speedRadioBtn/SpeedRadioBtn";
@@ -13,13 +6,24 @@ import { useDebounce } from "@/hooks/useDebounce";
 import React, { useEffect, useState } from "react";
 import * as S from "./RegisterCharger.style";
 import FareInput from "@/components/pages/registerCharger/fareInput/FareInput";
-import StickButton from "@/components/common/stickyButton/StickyButton";
 import { IChargerInfo, IErrors, ISearchResult } from "@/types/myCharger";
-import ConfirmDialog from "@/components/common/confirmDialog/ConfirmDialog";
 import { useNavigate } from "react-router-dom";
 import myChargerApi from "@/apis/myCharger";
 import MESSAGE from "@/constants/message";
 import { useToast } from "@/hooks/useToast";
+import {
+  ConfirmDialog,
+  IconButton,
+  Label,
+  PhotoRegister,
+  SearchInput,
+  SelectCharger,
+  StickyButton,
+  Textarea,
+  TopNavigationBar,
+} from "@/components/common";
+import { useQueryClient } from "@tanstack/react-query";
+import useCheckUserInfo from "@/hooks/useCheckUserInfo";
 
 export default function RegisterCharger() {
   const [chargerInfo, setChargerInfo] = useState<IChargerInfo>({
@@ -44,8 +48,14 @@ export default function RegisterCharger() {
     chargerType: { isError: false, errorMessage: "" },
   });
   const [isConfirm, setIsConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    user: { id },
+  } = useCheckUserInfo();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { triggerToast } = useToast();
+
   const updateSearchItem = (name: string, location: string) => {
     setChargerInfo((prev) => ({
       ...prev,
@@ -152,22 +162,31 @@ export default function RegisterCharger() {
     }
     return true;
   };
-
   const onSubmitValue = () => {
+    setIsLoading(true);
     const isPass = onValidationValues();
-    if (isPass) {
-      const data = createFormData();
-      myChargerApi
-        .postMyCharger(data)
-        .then((res) => navigate(`/charger/detail/${res.chargerId}`))
-        .catch((error) => {
-          if (error.response.status === 413) {
-            triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
-            return;
-          }
-          alert("충전소 등록이 실패하였습니다.");
-        });
+    if (!isPass) {
+      setIsLoading(false);
+      return;
     }
+    const data = createFormData();
+    myChargerApi
+      .postMyCharger(data)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ["myChargerList", id],
+          exact: true,
+        });
+        navigate(`/charger/detail/${res.chargerId}`);
+      })
+      .catch((error) => {
+        if (error.response.status === 413) {
+          triggerToast(MESSAGE.ERROR.FILE_SIZE, "error");
+          return;
+        }
+        alert("충전소 등록이 실패하였습니다.");
+      })
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -283,7 +302,12 @@ export default function RegisterCharger() {
           deletePhoto={deletePhoto}
         />
       </S.Main>
-      <StickButton onClick={onSubmitValue} text="작성완료" position="write" />
+      <StickyButton
+        disabled={isLoading}
+        onClick={onSubmitValue}
+        text={isLoading ? "등록중..." : "작성완료"}
+        position="write"
+      />
     </S.Container>
   );
 }

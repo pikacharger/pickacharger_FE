@@ -17,7 +17,7 @@ export default function Private({ children }: Props) {
   const token = TokenService.getToken();
 
   useEffect(() => {
-    if (!token) {
+    if (!token || token == "undefined") {
       open();
       return;
     }
